@@ -1,132 +1,64 @@
-# WAPH-Web Application Programming and Hacking
+# WAPH – Web Application Programming and Hacking  
+**Instructor:** Dr. Phu Phung  
+**Lab 1 – Foundations of the Web**  
+**Student:** Pratham Prabhu  
+**Email:** prabhupv@mail.uc.edu  
 
-## Instructor: Dr. Phu Phung
 
-# Lab 1 - Foundations of the Web 
 
-## Overview 
+---
 
-This lab introduced the foundational concepts of web communication and basic server-side programming. Part I focused on analyzing HTTP traffic using Wireshark and Telnet. Part II covered CGI web applications in C and PHP, along with understanding HTTP GET and POST requests. These exercises provided insights into how web requests are formed, processed, and responded to on the server.
+## 📌 Overview
 
-GitHub folder: [https://github.com/prabhupv/waph-prabhupv/tree/main/labs/lab1](https://github.com/prabhupv/waph-prabhupv/tree/main/labs/lab1)
+This lab explores the foundational layers of the web, emphasizing the HTTP protocol and simple server-side programming. It is divided into two main parts:  
 
-## Part I - The Web and HTTP Protocol
+- **Part I:** Capturing and analyzing HTTP traffic using Wireshark and Telnet to understand how web clients and servers exchange data.
+- **Part II:** Building basic web applications using **C (CGI programming)** and **PHP**, along with examining the behavior of **GET** and **POST** requests.
 
-### Task 1. Familiar with the Wireshark tool and HTTP protocol
+Through this lab, I learned how to:
+- Inspect low-level HTTP message structure
+- Write server-side applications in C and PHP
+- Understand client-server interactions through web forms and user input handling
 
-Wireshark was used to capture packets from web traffic generated through browsing and manual HTTP requests. We applied an HTTP filter and inspected the structure of HTTP requests and responses. 
+🔗 **GitHub Folder Link:** [https://github.com/prabhupv/waph-prabhupv/tree/main/labs/lab1](https://github.com/prabhupv/waph-prabhupv/tree/main/labs/lab1)
 
-- Screenshot 1: HTTP Request message  
-  ![](images/1.png)  
-  *Figure: HTTP GET request in Wireshark*
+---
 
-- Screenshot 2: HTTP Response message  
-  ![](images/2.png)  
-  *Figure: HTTP response from server*
+## 🔬 Part I – The Web and HTTP Protocol
 
-- Screenshot 3: Full HTTP Stream view  
-  ![](images/3.png)  
-  *Figure: HTTP stream captured in Wireshark*
+###  Task 1: Using Wireshark to Analyze HTTP Traffic
 
-### Task 2. Understanding HTTP using telnet and Wireshark
+**Tools Used:** Wireshark  
+**Goal:** Capture and inspect HTTP GET and Response packets to understand request headers, response codes, and payloads.
 
-Telnet was used to send a minimal HTTP request to example.com:
-```
-telnet example.com 80
-GET /index.html HTTP/1.0
-Host: example.com
-```
+Steps:
+- Enabled Wireshark filtering: `http`
+- Opened a webpage in a browser to trigger HTTP activity
+- Captured and analyzed packets
 
-Wireshark captured the request and response. Compared to browser requests, the telnet version lacked headers like `User-Agent` and `Accept`. Responses were otherwise similar.
+**Findings:**
+- The HTTP request includes the method (`GET`), resource path, and headers such as `Host`, `User-Agent`, etc.
+- The HTTP response includes status codes like `200 OK`, headers (e.g., `Content-Type`, `Content-Length`), and HTML content.
 
-- Screenshot 4: Terminal with HTTP request/response  
-  ![](images/4.png)  
-  *Figure: HTTP exchange using telnet*
+**Screenshots:**
+- ![](images/1.png)  
+  *Figure 1: HTTP GET request details captured by Wireshark*
 
-## Part II - Basic Web Application Programming
+- ![](images/2.png)  
+  *Figure 2: HTTP response message including headers and HTML content*
 
-### Task 1. (10 pts) CGI Web applications in C
+- ![](images/3.png)  
+  *Figure 3: Full HTTP stream including request and response*
 
-a. A simple Hello World CGI was written in C and compiled to an executable placed in `/usr/lib/cgi-bin`. Apache’s `cgid` module was enabled for this.
+---
 
-- Screenshot: Browser rendering the Hello World CGI  
-  ![](images/5.png)  
-  *Figure: Hello World CGI in browser*
+### Task 2: Sending HTTP Manually via Telnet and Capturing with Wireshark
 
-b. A second C program was created to output a full HTML document with headings and paragraphs.
+**Tools Used:** Telnet + Wireshark  
+**Goal:** Manually craft an HTTP request and analyze how it appears in Wireshark.
 
-Included file `index.c`:
-```c
-#include <stdio.h>
-int main(void) {
-    printf("Content-Type: text/html\n\n");
-    printf("<!DOCTYPE html><html><head><title>Lab 1</title></head>");
-    printf("<body><h1>Hello from Pratham</h1><p>This is a simple HTML page from a CGI C program.</p></body></html>");
-    return 0;
-}
-```
-
-- Screenshot: HTML output in browser  
-  ![](images/6.png)  
-  *Figure: CGI HTML output*
-
-### Task 2 (10 pts). A simple PHP Web Application with user input.
-
-a. A PHP file `helloworld.php` was created to display a custom message and call `phpinfo()`.
-
-- Screenshot: Hello message + phpinfo()  
-  ![](images/7.png)  
-  *Figure: PHP Hello World with phpinfo output*
-
-b. `echo.php` was created to output user input:
-```php
-<?php
-echo "Echoed data: " . $_REQUEST["data"];
-?>
-```
-- Screenshot 1: Browser with GET request output  
-  ![](images/8.png)  
-  *Figure: echo.php with GET request*
-
-- Screenshot 2: curl terminal with POST request  
-  ![](images/9.png)  
-  *Figure: echo.php with POST request using curl*
-
-**Security risk:** The app echoes raw input, allowing potential XSS attacks. For example:
-```
-echo.php?data=<script>alert('XSS')</script>
-```
-To prevent this, use:
-```php
-echo htmlspecialchars($_REQUEST["data"]);
-```
-
-### Task 3 (10 pts). Understanding HTTP GET and POST requests.
-
-a. Wireshark captured GET request to `echo.php` with data in the URL.
-- Screenshot 1: GET request in Wireshark  
-  ![](images/10.png)  
-  *Figure: GET request packet*
-
-- Screenshot 2: GET response  
-  ![](images/11.png)  
-  *Figure: Response to GET*
-
-b. curl was used for a POST request:
+Command used:
 ```bash
-curl -X POST http://localhost/echo.php -d "data=Pratham"
-```
-- Screenshot 1: curl output  
-  ![](images/12.png)  
-  *Figure: curl POST output*
-
-- Screenshot 2: POST stream in Wireshark  
-  ![](images/13.png)  
-  *Figure: POST request in Wireshark*
-
-c. **Comparison:**
-- GET: Data in URL, visible, bookmarkable, limited size.
-- POST: Data in body, hidden from URL, better for forms.
-- Responses were similar, but the request structure differs.
-
-## Submission
+telnet example.com 80
+GET / HTTP/1.0
+Host: example.com
